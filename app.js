@@ -4,8 +4,11 @@ const morgan = require("morgan");
 const userRoutes = require("./routes/userRoutes");
 
 // middleware
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
 // body-parser in build express midelwear
-app.use(morgan("dev"));
 app.use(express.json());
 
 // custome middleware for test
@@ -17,4 +20,4 @@ app.use((req, res, next) => {
 // API ROUTES
 app.use("/api/v1/indiamart/user", userRoutes);
 
-app.listen(5000, () => console.log("server is Running on port 5000"));
+module.exports = app;
