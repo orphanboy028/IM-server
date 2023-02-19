@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/orphanboy028/IM-server/issues"
   },
-  "homepage": "https://github.com/orphanboy028/IM-server#readme"
+  "homepage": "https://github.com/orphanboy028/IM-server#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
