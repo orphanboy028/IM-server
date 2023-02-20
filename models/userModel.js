@@ -32,13 +32,10 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("Users", userSchema);
-
 // hash The password before save
 userSchema.pre("save", async function (next) {
   // if we not modefied pawword but update other fields it move on next
   if (!this.isModified("password")) return next();
-
   //   wehen password modified then this code will run
   //   hash the password
   this.password = await bcrypt.hash(this.password, 12);
@@ -46,5 +43,7 @@ userSchema.pre("save", async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+const User = mongoose.model("Users", userSchema);
 
 module.exports = User;
