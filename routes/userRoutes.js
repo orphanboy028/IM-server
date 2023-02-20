@@ -5,8 +5,12 @@ const userAuthController = require("../controllers/auth/userAuthController");
 
 // User Registration
 router.post("/signup", userAuthController.signup);
+// User Login
+router.post("/login", userAuthController.login);
 
 // Get All user This Route handel By super Admin or Admin
-router.route("/").get(userController.getAllUser);
+router
+  .route("/")
+  .get(userAuthController.userProtect, userController.getAllUser);
 
 module.exports = router;

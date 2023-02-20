@@ -44,6 +44,25 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// Password match schema method use for login
+userSchema.methods.correctPassword = async function (
+  userPassword,
+  hashPassword
+) {
+  return await bcrypt.compare(userPassword, hashPassword);
+};
+
+// check password change or not after token isshued
+userSchema.methods.changePasswordAfter = function (JWTTimeStemp) {
+  if (this.passwordChangeAt) {
+    const changeTimestemp = parseInt(
+      this.passwordChangeAt.getTime() / 1000,
+      10
+    );
+    return JWTTimeStemp < changeTimestemp;
+  }
+  return false;
+};
 const User = mongoose.model("Users", userSchema);
 
 module.exports = User;
