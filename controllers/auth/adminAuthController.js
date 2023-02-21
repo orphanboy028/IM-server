@@ -1,7 +1,7 @@
 // Files
 const AppError = require("../../utils/appError");
 const catchAsync = require("../../utils/catchAsync");
-const User = require("../../models/userModel");
+const Admin = require("../../models/adminModel");
 // NPM packages
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
@@ -26,51 +26,51 @@ const signToken = (id) => {
   });
 };
 
-// User Register API
-exports.signup = catchAsync(async (req, res, next) => {
+// Admin Register API
+exports.adminSignup = catchAsync(async (req, res, next) => {
   const { fullName, email, password, passwordConfirm } = req.body;
   //1) check the required Fields
   if (!fullName || !email || !password || !passwordConfirm) {
     return next(new AppError("Please Provide the Required fields", 404));
   }
   //2) check user is in data base
-  const user = await User.findOne({ email });
+  const admin = await Admin.findOne({ email });
 
-  if (user) {
+  if (admin) {
     return next(new AppError("Your Are Already Registered Please Login", 400));
   }
   //   3) Create new user
-  const newUser = await User.create({
+  const newadmin = await Admin.create({
     fullName,
     email,
     password,
     passwordConfirm,
   });
 
-  createSendToken(newUser, 201, res);
+  createSendToken(newadmin, 201, res);
 });
 
 // Login User API
-exports.login = catchAsync(async (req, res, next) => {
+exports.adminLogin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   //   1) user input validation
   if (!email || !password) {
     return next(new AppError("Please Enter your Email and Password", 400));
   }
   // 2) check user in data base
-  const user = await User.findOne({ email }).select("+password");
+  const admin = await Admin.findOne({ email }).select("+password");
 
   // 3) check password is correct or not
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  if (!admin || !(await admin.correctPassword(password, admin.password))) {
     return next(new AppError("Your user email or password is incorrect", 401));
   }
   //4) Create Jwt token
-  createSendToken(user, 201, res);
+  createSendToken(admin, 201, res);
 });
 
 // user Protect Route Authntication
 
-exports.userProtect = catchAsync(async (req, res, next) => {
+exports.adminProtect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
   if (
@@ -87,21 +87,21 @@ exports.userProtect = catchAsync(async (req, res, next) => {
   // 2) token verification
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   // 3) check if user still exists
-  const freshUser = await User.findById(decoded.id);
+  const freshAdmin = await Admin.findById(decoded.id);
 
-  if (!freshUser) {
+  if (!freshAdmin) {
     return next(new AppError("User Blonge to this credintial no longer exist"));
   }
 
   // 4) check if user chnage password after the token was issued
 
-  if (freshUser.changePasswordAfter(decoded.iat)) {
+  if (freshAdmin.changePasswordAfter(decoded.iat)) {
     return next(
       new AppError("password has recantely changed please login again")
     );
   }
 
   // Grant Acces to protected Route
-  req.user = freshUser;
+  req.admin = freshAdmin;
   next();
 });

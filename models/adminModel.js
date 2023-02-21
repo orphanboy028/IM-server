@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const userSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
   fullName: {
     type: String,
     require: [true, "please Provide your name!"],
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // hash The password before save
-userSchema.pre("save", async function (next) {
+adminSchema.pre("save", async function (next) {
   // if we not modefied pawword but update other fields it move on next
   if (!this.isModified("password")) return next();
   //   wehen password modified then this code will run
@@ -47,7 +47,7 @@ userSchema.pre("save", async function (next) {
 });
 
 // Password match schema method use for login
-userSchema.methods.correctPassword = async function (
+adminSchema.methods.correctPassword = async function (
   userPassword,
   hashPassword
 ) {
@@ -55,7 +55,7 @@ userSchema.methods.correctPassword = async function (
 };
 
 // check password change or not after token isshued
-userSchema.methods.changePasswordAfter = function (JWTTimeStemp) {
+adminSchema.methods.changePasswordAfter = function (JWTTimeStemp) {
   if (this.passwordChangeAt) {
     const changeTimestemp = parseInt(
       this.passwordChangeAt.getTime() / 1000,
@@ -67,6 +67,6 @@ userSchema.methods.changePasswordAfter = function (JWTTimeStemp) {
 };
 
 // User Model
-const User = mongoose.model("Users", userSchema);
+const Admin = mongoose.model("Admin", adminSchema);
 
-module.exports = User;
+module.exports = Admin;

@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./utils/errorController");
 const userRoutes = require("./routes/userRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 // middleware
 if (process.env.NODE_ENV === "development") {
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 
 // API ROUTES
 app.use("/api/v1/indiamart/user", userRoutes);
+app.use("/api/v1/indiaMart/admin", adminRoutes);
 
 // Route is not defined Error midelwear
 app.all("*", (req, res, next) => {
