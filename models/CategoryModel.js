@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+var slugify = require("slugify");
 
 const leafCategorySchema = mongoose.Schema({
   leafCategoryName: {
@@ -11,37 +12,39 @@ const leafCategorySchema = mongoose.Schema({
   },
 });
 
-const subCategorySchema = mongoose.Schema({
-  subCategoryName: {
-    type: String,
-    require: [true, "please Provide your name!"],
-  },
-
-  descreption: {
-    type: String,
-  },
-
-  categoryImage: {
-    type: String,
-  },
-
-  lefCategory: [leafCategorySchema],
-});
-
 const categorySchema = mongoose.Schema({
   categoryName: {
     type: String,
     require: [true, "please Provide your name!"],
   },
 
+  slug: {
+    type: String,
+    require: [true, "slug didn't work"],
+    unique: true,
+  },
+
   categoryImage: {
     type: String,
   },
 
-  subCategory: [subCategorySchema],
+  subCategory: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "SubCategories",
+    },
+  ],
 });
 
-// User Model
+// slug the main category
+categorySchema.pre("save", function (next) {
+  this.slug = slugify(this.categoryName, {
+    lower: false,
+  });
+  next();
+});
+
+// Category Model
 const Category = mongoose.model("Categories", categorySchema);
 
 module.exports = Category;

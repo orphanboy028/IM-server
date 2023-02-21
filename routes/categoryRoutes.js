@@ -5,7 +5,32 @@ const categoryController = require("../controllers/adminController/categoryContr
 
 router
   .route("/")
-  .get(adminAuthController.adminProtect, categoryController.getAllCategories)
+  .get(categoryController.getAllCategories)
   .post(adminAuthController.adminProtect, categoryController.createCategory);
+
+router
+  .route("/:categoryId")
+  .patch(adminAuthController.adminProtect, categoryController.addSubCategories)
+  .delete(
+    adminAuthController.adminProtect,
+    categoryController.deleteMainCategory
+  );
+
+router
+  .route("/subCategory")
+  .post(adminAuthController.adminProtect, categoryController.createSubCategory)
+  .get(adminAuthController.adminProtect, categoryController.getSubCategories);
+
+router
+  .route("/leaf-category")
+  .post(adminAuthController.adminProtect, categoryController.createLeafCategory)
+  .get(
+    adminAuthController.adminProtect,
+    categoryController.getAllLeafCatgories
+  );
+
+router
+  .route("/leaf-category/:subcategoryId")
+  .patch(adminAuthController.adminProtect, categoryController.addLefCategories);
 
 module.exports = router;
