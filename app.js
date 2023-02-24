@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const morgan = require("morgan");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./utils/errorController");
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // body-parser in build express midelwear
+app.use(cors());
 app.use(express.json());
 
 // custome middleware for test

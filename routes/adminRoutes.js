@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const adminAuthController = require("../controllers/auth/adminAuthController");
 const userController = require("../controllers/userController");
+const adminController = require("../controllers/adminController/adminController");
 
 // Admin Registration
 router.post("/admin-signup", adminAuthController.adminSignup);
@@ -12,5 +13,8 @@ router.post("/admin-login", adminAuthController.adminLogin);
 router
   .route("/")
   .get(adminAuthController.adminProtect, userController.getAllUser);
+
+// Get All Admin
+router.route("/admin-list").get(adminController.getAllAdmin);
 
 module.exports = router;

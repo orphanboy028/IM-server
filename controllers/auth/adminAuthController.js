@@ -29,6 +29,7 @@ const signToken = (id) => {
 // Admin Register API
 exports.adminSignup = catchAsync(async (req, res, next) => {
   const { fullName, email, password, passwordConfirm } = req.body;
+  console.log(fullName, email, password, passwordConfirm);
   //1) check the required Fields
   if (!fullName || !email || !password || !passwordConfirm) {
     return next(new AppError("Please Provide the Required fields", 404));
