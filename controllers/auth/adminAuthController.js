@@ -6,13 +6,14 @@ const Admin = require("../../models/adminModel");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 // create tooken respose
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, res, message) => {
   const token = signToken(user._id);
   //   Hide the password from respose data
   user.password = undefined;
   res.status(statusCode).json({
     status: "Success",
     token,
+    message,
     data: {
       user,
     },
@@ -48,7 +49,8 @@ exports.adminSignup = catchAsync(async (req, res, next) => {
     passwordConfirm,
   });
 
-  createSendToken(newadmin, 201, res);
+  const message = "your Registration sucessfulled";
+  createSendToken(newadmin, 201, res, message);
 });
 
 // Login User API
@@ -66,7 +68,8 @@ exports.adminLogin = catchAsync(async (req, res, next) => {
     return next(new AppError("Your user email or password is incorrect", 401));
   }
   //4) Create Jwt token
-  createSendToken(admin, 201, res);
+  const message = "your login sucessfulled";
+  createSendToken(admin, 201, res, message);
 });
 
 // user Protect Route Authntication
