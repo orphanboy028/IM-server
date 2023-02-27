@@ -1,21 +1,11 @@
 const mongoose = require("mongoose");
 var slugify = require("slugify");
 
-const leafCategorySchema = mongoose.Schema({
-  leafCategoryName: {
-    type: String,
-    require: [true, "please Provide your name!"],
-  },
-
-  categoryImage: {
-    type: String,
-  },
-});
-
 const categorySchema = mongoose.Schema({
   categoryName: {
     type: String,
     require: [true, "please Provide your name!"],
+    unique: true,
   },
 
   slug: {
@@ -45,6 +35,6 @@ categorySchema.pre("save", function (next) {
 });
 
 // Category Model
-const Category = mongoose.model("Categories", categorySchema);
+const Categories = mongoose.model("Categories", categorySchema);
 
-module.exports = Category;
+module.exports = Categories;

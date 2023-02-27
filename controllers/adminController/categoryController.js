@@ -1,12 +1,12 @@
 const AppError = require("../../utils/appError");
 const catchAsync = require("../../utils/catchAsync");
-const Category = require("../../models/CategoryModel");
+const Categories = require("../../models/CategoryModel");
 const SubCategory = require("../../models/subCategoreyModel");
 const LefCategory = require("../../models/leafCategoryModel");
 ///////////////////////////////
 // Get All category
 exports.getAllCategories = catchAsync(async (req, res, next) => {
-  const allCategories = await Category.find();
+  const allCategories = await Categories.find();
   //Category Response
   res.status(200).json({
     status: "Success",
@@ -18,16 +18,18 @@ exports.getAllCategories = catchAsync(async (req, res, next) => {
 
 // Create only Main category by Admin
 exports.createCategory = catchAsync(async (req, res, next) => {
-  // const { categoryName } = req.body;
+  console.log(req.body);
+  const { categoryName } = req.body;
+  console.log(categoryName);
 
-  const newCategory = await Category.create(req.body);
+  const newCategory = await Categories.create({
+    categoryName: categoryName,
+  });
 
   res.status(200).json({
     status: "Success",
     requesteAt: req.requestTime,
-    data: {
-      newCategory,
-    },
+    newCategory,
   });
 });
 
@@ -35,7 +37,7 @@ exports.createCategory = catchAsync(async (req, res, next) => {
 exports.deleteMainCategory = catchAsync(async (req, res, next) => {
   const { categoryId } = req.params;
 
-  const category = await Category.findByIdAndDelete(categoryId);
+  const category = await Categories.findByIdAndDelete(categoryId);
 
   res.status(200).json({
     status: "Success",
@@ -46,10 +48,11 @@ exports.deleteMainCategory = catchAsync(async (req, res, next) => {
 /////////////////////////////////////////////////////////
 // add sub-Categories in main Category
 exports.addSubCategories = catchAsync(async (req, res, next) => {
-  const { categoryId } = req.params;
+  const { categorySlug } = req.params;
   const { subCategoryId } = req.body;
-  const addSubCategoies = await Category.findByIdAndUpdate(
-    { _id: categoryId },
+
+  const addSubCategoies = await Categories.findOneAndUpdate(
+    { slug: categorySlug },
     {
       $addToSet: { subCategory: subCategoryId },
     },
@@ -67,7 +70,13 @@ exports.addSubCategories = catchAsync(async (req, res, next) => {
 
 // Create Sub-Categories
 exports.createSubCategory = catchAsync(async (req, res, next) => {
-  const subCategory = await SubCategory.create(req.body);
+  const { categorySlug } = req.params;
+  const { subCategoryName, descreption } = req.body;
+  const subCategory = await SubCategory.create({
+    subCategoryName,
+    descreption,
+    categorySlug,
+  });
   res.status(200).json({
     status: "Success",
     requesteAt: req.requestTime,
@@ -76,7 +85,10 @@ exports.createSubCategory = catchAsync(async (req, res, next) => {
 });
 
 exports.getSubCategories = catchAsync(async (req, res, next) => {
-  const getAllSubCategories = await SubCategory.find();
+  const { categorySlug } = req.params;
+  const getAllSubCategories = await SubCategory.find({
+    categorySlug: categorySlug,
+  });
 
   res.status(200).json({
     status: "Success",
@@ -90,7 +102,13 @@ exports.getSubCategories = catchAsync(async (req, res, next) => {
 
 // create Leaf Category
 exports.createLeafCategory = catchAsync(async (req, res, next) => {
-  const createLefCategory = await LefCategory.create(req.body);
+  const { subcategoryslug } = req.params;
+  const { lefCategoryName, descreption } = req.body;
+  const createLefCategory = await LefCategory.create({
+    lefCategoryName,
+    descreption,
+    subcategoryslug,
+  });
   res.status(200).json({
     status: "Success",
     requesteAt: req.requestTime,
@@ -110,10 +128,10 @@ exports.getAllLeafCatgories = catchAsync(async (req, res, next) => {
 });
 
 exports.addLefCategories = catchAsync(async (req, res, next) => {
-  const { subcategoryId } = req.params;
+  const { subcategoryslug } = req.params;
   const { lefCategoryId } = req.body;
-  const addLefategoies = await SubCategory.findByIdAndUpdate(
-    { _id: subcategoryId },
+  const addLefategoies = await SubCategory.findOneAndUpdate(
+    { slug: subcategoryslug },
     {
       $addToSet: { lefCategory: lefCategoryId },
     },

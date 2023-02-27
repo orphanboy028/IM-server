@@ -9,7 +9,7 @@ router
   .post(adminAuthController.adminProtect, categoryController.createCategory);
 
 router
-  .route("/:categoryId")
+  .route("/:categorySlug")
   .patch(adminAuthController.adminProtect, categoryController.addSubCategories)
   .delete(
     adminAuthController.adminProtect,
@@ -17,12 +17,12 @@ router
   );
 
 router
-  .route("/subCategory")
+  .route("/subCategory/:categorySlug")
   .post(adminAuthController.adminProtect, categoryController.createSubCategory)
   .get(adminAuthController.adminProtect, categoryController.getSubCategories);
 
 router
-  .route("/leaf-category")
+  .route("/leaf-category/:subcategoryslug")
   .post(adminAuthController.adminProtect, categoryController.createLeafCategory)
   .get(
     adminAuthController.adminProtect,
@@ -30,7 +30,7 @@ router
   );
 
 router
-  .route("/leaf-category/:subcategoryId")
+  .route("/leaf-category/:subcategoryslug")
   .patch(adminAuthController.adminProtect, categoryController.addLefCategories);
 
 module.exports = router;

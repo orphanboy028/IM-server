@@ -18,6 +18,10 @@ const LefCategorySchema = mongoose.Schema({
     type: String,
   },
 
+  subcategoryslug: {
+    type: String,
+  },
+
   categoryImage: {
     type: String,
   },

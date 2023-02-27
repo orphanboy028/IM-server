@@ -21,6 +21,9 @@ const subCategorySchema = mongoose.Schema({
   categoryImage: {
     type: String,
   },
+  categorySlug: {
+    type: String,
+  },
 
   lefCategory: [
     {
